@@ -1,49 +1,53 @@
 <mat-card class="example-card">
   <mat-card-title style="margin:0 auto;width:100%;">Create Post</mat-card-title>
   <button style="margin:0 auto;width:100%;" mat-icon-button (click)="newField()" color="{{show ? 'warn' : 'primary'}}">
-      <mat-icon>{{show ? 'add_circle' : 'remove_circle'}}</mat-icon>
+      <mat-icon>{{show ? 'unfold_less' : 'unfold_more'}}</mat-icon>
   </button>
   <ng-container *ngIf="show">
     <mat-card-content>
       <mat-form-field class="input-full-width">
         <mat-label>Title</mat-label>
-        <input matInput placeholder="Title"  name="title" ngModel #title="ngModel" required >
+        <input matInput placeholder="Title"  name="title" [(ngModel)] = "title" required >
       </mat-form-field>
+      <div class = "input-full-width" style="text-align:center;" *ngIf="this.sentiment != 'None' && !checkingSentiment">
+        <mat-icon style="font-size: 30px;margin:0 auto;width:100%;" color="{{this.sentiment == 'Positive' ? 'primary' : 'warn'}}">{{ this.sentiment == 'Positive' ? 'sentiment_very_satisfied' : 'sentiment_very_dissatisfied'}}</mat-icon>
+      </div>
       <mat-form-field class="input-full-width">
         <mat-label>Comment</mat-label>
-        <textarea matInput placeholder="Thought..."  name="thought" ngModel #thought="ngModel" required wrap="soft" ></textarea>
+        <textarea matInput placeholder="Thought..."  name="thought" [(ngModel)] = "thought" required wrap="soft" ></textarea>
       </mat-form-field>
       <div class="input-full-width">
-        <button type="button" mat-icon-button class="mat-button" (click)="loadSentiment()">
-          <mat-icon *ngIf="!checkingSentiment && this.sentiment == 'Positive'" style="color:#10a500;">sentiment_very_satisfied</mat-icon>
-          <mat-icon *ngIf="!checkingSentiment && this.sentiment == 'Negetive'" style="color:#990000;">sentiment_very_dissatisfied</mat-icon>
-          <mat-icon *ngIf="!checkingSentiment && this.sentiment == 'None'" style="color:#315681;">radio_button_unchecked</mat-icon>
-          <div *ngIf="checkingSentiment">
-            <mat-progress-spinner color="primary"  [diameter]="40" [strokeWidth]="3" mode="indeterminate"></mat-progress-spinner>
-          </div>
-        </button>
-        <button type="submit" mat-icon-button class="mat-button">
-            <mat-icon style="color:#315681;">send</mat-icon>
-        </button>
+        <div class = "input-full-width" style="text-align:center;" *ngIf="checkingSentiment;else actionBlock">
+          <mat-progress-spinner style="margin:0 auto;" color="primary"  [diameter]="30" [strokeWidth]="3" mode="indeterminate"></mat-progress-spinner>
+        </div>
+        <ng-template #actionBlock>
+          <button type="button" mat-raised-button style="width:50%;padding-right:15px;" (click)="loadSentiment()">
+            Check Sentiment
+          </button>
+          <button type="submit" color="primary" mat-raised-button style="width:50%;padding-left:15px;" (click)="onSubmit()" [disabled]="this.sentiment == 'None' || checkingSentiment">
+              Post
+          </button>
+        </ng-template>
       </div>
     </mat-card-content>
   </ng-container>
 </mat-card>
   
-<div *ngFor="let pot of post">
-  <mat-card class = "mat-card" style="z-index:0;">
-    <button mat-icon-button (click)="onDelete(pot)" color="primary">
-        <mat-icon>remove_circle_outline</mat-icon>
-    </button>
-    <mat-card-title style="color:#315681;">{{pot?.title}}</mat-card-title>
-    <mat-card-subtitle>{{pot?.date}}</mat-card-subtitle>
-    <mat-card-content style="font-size:20px;">
-        <p style="color:#315681;">{{pot?.post}}</p>
-    </mat-card-content>
-    <div class = "input-full-width">
-      <mat-icon *ngIf="pot?.fact == 'Positive'" style="color:#10a500;">sentiment_very_satisfied</mat-icon>
-      <mat-icon *ngIf="pot?.fact == 'Negetive'" style="color:#990000;">sentiment_very_dissatisfied</mat-icon>
-    </div>
-  </mat-card>
-</div>
+<ng-container *ngFor="let pot of post">
+    <mat-card class="example-card">
+      <mat-card-title>{{pot?.title}}</mat-card-title>
+      <mat-card-subtitle>{{pot?.date}}</mat-card-subtitle>
+      <div class = "input-full-width" style="text-align:center;">
+        <mat-icon style="font-size: 30px;margin:0 auto;width:100%;" color="{{pot?.fact == 'Positive' ? 'primary' : 'warn'}}">
+          {{pot?.fact == 'Positive' ? 'sentiment_very_satisfied' : 'sentiment_very_dissatisfied'}}
+        </mat-icon>
+      </div>
+      <mat-card-content style="font-size:20px;">
+          <p>{{pot?.post}}</p>
+      </mat-card-content>
+      <button style="margin:0 auto;width:100%;" mat-icon-button (click)="onDelete(pot)" color="primary">
+        <mat-icon style="font-size: 30px;margin:0 auto;width:100%;" color="warn">remove_circle_outline</mat-icon>
+      </button>
+    </mat-card>
+</ng-container>
   

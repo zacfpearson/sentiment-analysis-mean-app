@@ -23,7 +23,7 @@ def main():
 
     use = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual/3")
 
-    model = keras.models.load_model('my_model.h5')
+    model = keras.models.load_model('./server/routes/learning/my_model.h5')
 
     emb_input = use([arg3])
     review_emb_input = tf.reshape(emb_input, [-1]).numpy()

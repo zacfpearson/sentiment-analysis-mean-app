@@ -14,7 +14,7 @@ export class DatasService {
 
   addPost(post: Posts){
     //let post = this.posts.unshift(post);
-    return this.http.post<{message: String, obj: Posts}>('/api/posts,body', post)
+    return this.http.post<Posts>('/api/posts', post)
         .pipe(map(response => response));
   }
 

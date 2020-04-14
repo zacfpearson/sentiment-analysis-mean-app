@@ -25,15 +25,14 @@ router.post('/posts', function(req,res,next){
 });
 
 router.delete('/posts/:id', function(req,res,next){
-  Posts.findByIdAndRemove({_id: req.params.id}).then(function(posts){
+  Posts.findOneAndDelete({_id: req.params.id}).then(function(posts){
     res.send(posts);
   }).catch(next);
 });
 
 router.post('/tensorflow/sentiment', function(req,res,next){
   let deets = [];
-  console.log(req.body.post);
-  var process = spawn('python3', ["./server/routes/learning/Training.py",
+  var process = spawn('python3', ["./server/routes/learning/predict.py",
    req.body.title,
    req.body.post,
    req.body.date
@@ -44,11 +43,11 @@ router.post('/tensorflow/sentiment', function(req,res,next){
   process.stderr.on('data', function (data) {
     console.log(data.toString());
   });
-  process.stdout.on('end', function (data) {
+  process.stdout.on('end', function () {
     deets = Buffer.concat(deets);
     deets = deets.toString();
-    deets = {"data":deets.substring(0,deets.length-2)};
-    res.send(JSON.stringify(deets));
+    deets = {"data":deets.substring(0,deets.length-1)};
+    res.send(deets);
   });
 });
 

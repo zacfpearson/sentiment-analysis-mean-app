@@ -32,10 +32,12 @@ export class HomeComponent implements OnInit {
     if (this.sentiment != 'None'){
         var posting: Posts = new Posts(this.title,this.thought, date, this.sentiment);
         this.webService.addPost(posting)
-            .subscribe(data => console.log(data));
-        this.post.unshift(posting);
-        this.show = !this.show;
-        this.sentiment = 'None';
+            .subscribe(data => {
+              var posting_return: Posts = new Posts(data.title,data.post, data.date, data.fact, data._id);
+              this.post.unshift(posting_return);
+              this.show = !this.show;
+              this.sentiment = 'None';
+            });
     } else {
       console.log('Sentiment Check Needed');
     }
@@ -65,9 +67,9 @@ export class HomeComponent implements OnInit {
     var time = dateObj.toLocaleTimeString();
     var date = month + '/' + day + '/' + year + ' ' + time;
     var posting: Posts = new Posts(this.title,this.thought, date, this.sentiment);
-    console.log('checking...');
     this.webService.checkSentiment(posting)
         .subscribe(data => {
+          console.log(data);
           if(data.data == 'Positive Sentiment'){
             this.sentiment = 'Positive';
           } else {
