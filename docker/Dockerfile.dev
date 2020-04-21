@@ -1,0 +1,21 @@
+FROM node:lts-stretch-slim
+
+COPY package*.json /sentiment-analysis/
+
+WORKDIR /sentiment-analysis
+
+RUN apt update -y && \
+    apt install python3 -y && \
+    apt install python3-pip -y && \
+    pip3 install --upgrade pip setuptools && \
+    npm install -g @angular/cli && \
+    npm install && \
+    python3 -m pip install numpy tensorflow tensorflow_hub tensorflow_text pyyaml h5py
+
+COPY . /sentiment-analysis
+
+RUN ng build
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]

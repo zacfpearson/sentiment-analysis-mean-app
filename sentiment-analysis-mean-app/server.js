@@ -9,7 +9,7 @@ const api = require('./server/routes/api');
 const app = express();
 
 //connect to mogoDB
-let uri = 'mongodb://localhost/inputs';
+let uri = 'mongodb://sentiment-analysis-db/inputs';
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
