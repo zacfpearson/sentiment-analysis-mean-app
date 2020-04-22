@@ -4,13 +4,8 @@ COPY package*.json /sentiment-analysis/
 
 WORKDIR /sentiment-analysis
 
-RUN apt update -y && \
-    apt install python3 -y && \
-    apt install python3-pip -y && \
-    pip3 install --upgrade pip setuptools && \
-    npm install -g @angular/cli && \
-    npm install && \
-    python3 -m pip install numpy tensorflow tensorflow_hub tensorflow_text pyyaml h5py
+RUN npm install -g @angular/cli && \
+    npm install
 
 COPY . /sentiment-analysis
 

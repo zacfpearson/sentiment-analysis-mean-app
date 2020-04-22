@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Posts = require('../models/posts');
-var spawn = require('child_process').spawn;
+
+const redis = require("redis");
+
+const publisher = redis.createClient("redis://sentiment-analysis-broker:6379");
 
 router.get('/posts', function(req,res,next){
   Posts.find().exec(function(err, posts){
@@ -31,24 +34,16 @@ router.delete('/posts/:id', function(req,res,next){
 });
 
 router.post('/tensorflow/sentiment', function(req,res,next){
-  let deets = [];
-  var process = spawn('python3', ["./server/routes/learning/predict.py",
-   req.body.title,
-   req.body.post,
-   req.body.date
-  ]);
-  process.stdout.on('data', function (data) {
-    deets.push(data);
+  const subscriber = redis.createClient("redis://sentiment-analysis-broker:6379");
+  subscriber.on("message", function(channel, message) {
+    message = message.toString();
+    message = {"data":message};
+    res.send(message);
+    subscriber.unsubscribe();
+    subscriber.quit();
   });
-  process.stderr.on('data', function (data) {
-    console.log(data.toString());
-  });
-  process.stdout.on('end', function () {
-    deets = Buffer.concat(deets);
-    deets = deets.toString();
-    deets = {"data":deets.substring(0,deets.length-1)};
-    res.send(deets);
-  });
+  subscriber.subscribe("sentiment-reply");
+  publisher.publish("sentiment-request", JSON.stringify(req.body.post));
 });
 
 module.exports = router;

@@ -1,18 +1,13 @@
 # TODO - Switch to alpine when python app is seperated
-FROM node:lts-stretch-slim as builder
+FROM node:lts-alpine as builder
 COPY . /sentiment-analysis
 WORKDIR /sentiment-analysis
 RUN npm install -g @angular/cli && \
     npm install && \
     ng build
 
-FROM node:lts-stretch-slim as app
+FROM node:node:lts-alpine as app
 COPY --from=builder /sentiment-analysis /sentiment-analysis
-RUN apt update -y && \
-    apt install python3 -y && \
-    apt install python3-pip -y && \
-    pip3 install --upgrade pip setuptools && \
-    python3 -m pip install numpy tensorflow tensorflow_hub tensorflow_text pyyaml h5py 
 WORKDIR /sentiment-analysis
 EXPOSE 3000
 CMD ["node", "server.js"]
