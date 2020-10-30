@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {DatasService} from '../services/web.service';
 import {Posts} from '../home/posts.model';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +17,8 @@ export class HomeComponent implements OnInit {
   feedBack: string = '';
   title: string = null;
   thought: string = null;
+  
+  socket = io('127.0.0.1:3000');
 
   sentiment: string = 'None';
   checkingSentiment: boolean = false;
@@ -67,15 +70,7 @@ export class HomeComponent implements OnInit {
     var time = dateObj.toLocaleTimeString();
     var date = month + '/' + day + '/' + year + ' ' + time;
     var posting: Posts = new Posts(this.title,this.thought, date, this.sentiment);
-    this.webService.checkSentiment(posting)
-        .subscribe(data => {
-          console.log(data);
-          if(data.data == 'Positive Sentiment'){
-            this.sentiment = 'Positive';
-          } else {
-            this.sentiment ='Negetive';
-          }
-          this.checkingSentiment = false;});
+    this.socket.emit('get-sentiment',posting);
   }
 
   ngOnInit(): void {
@@ -83,7 +78,15 @@ export class HomeComponent implements OnInit {
       for(var i = 0; i < blogPost.length; i++){
         this.post.unshift(blogPost[i]);
       }
-    })
+    });
+    this.socket.on('got-sentiment', (data) =>{
+      console.log(data);
+          if(data.data == 'Positive Sentiment'){
+            this.sentiment = 'Positive';
+          } else {
+            this.sentiment ='Negetive';
+          }
+          this.checkingSentiment = false;
+    });
   }
-
 }

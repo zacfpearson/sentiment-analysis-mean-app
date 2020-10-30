@@ -35,10 +35,4 @@ export class DatasService {
     return this.http.delete<{message: String, obj: Posts}>('/api/posts/'+post._id)
       .pipe(map(response => response));
   }
-
-  checkSentiment(post: Posts){
-    const headers = new Headers({'Content-Type':'application/json'});
-    return this.http.post<{data: String}>('/api/tensorflow/sentiment',post)
-        .pipe(map(response => response));
-  }
 }

@@ -40,5 +40,5 @@ Run `docker run --network=sentiment-analysis-bridge -p 3000:3000 --rm sentiment-
 * [X] Split python app into seperate service
 * [X] Convert Prod Dockerfiles to Alpine after Python separation
 * [ ] Make redis hostname a cmd arg
-* [ ] Use web sockets for sentiment analysis
+* [X] Use web sockets for sentiment analysis
 

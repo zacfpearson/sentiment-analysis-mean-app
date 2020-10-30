@@ -3,6 +3,12 @@ const path = require('path');
 const http = require('http');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const redis = require("redis");
+
+const publisher = redis.createClient("redis://sentiment-analysis-broker:6379");
+const subscriber = redis.createClient("redis://sentiment-analysis-broker:6379");
+
+subscriber.subscribe("sentiment-reply");
 
 const api = require('./server/routes/api');
 
@@ -36,6 +42,25 @@ app.set('port', port);
  * Create HTTP server.
  */
 const server = http.createServer(app);
+
+const io = require('socket.io')(server);
+
+subscriber.on("message", function(channel, message) {
+  message = message.toString();
+  message = JSON.parse(message);
+  socketId = message.clientId;
+  sentiment = message.sentiment;
+  res = {"data":sentiment};
+  io.to(socketId).emit('got-sentiment', res);
+});
+
+io.on('connection',function(socket){
+  socket.on('get-sentiment', function(msg){
+    console.log(msg);
+    data={"clientId":socket.id, "post":msg.post};
+    publisher.publish("sentiment-request", JSON.stringify(data));
+  });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
