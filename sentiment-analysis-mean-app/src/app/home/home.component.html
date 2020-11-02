@@ -9,13 +9,14 @@
         <mat-label>Title</mat-label>
         <input matInput placeholder="Title"  name="title" [(ngModel)] = "title" required >
       </mat-form-field>
-      <div class = "input-full-width" style="text-align:center;" *ngIf="this.sentiment != 'None' && !checkingSentiment">
-        <mat-icon style="font-size: 30px;margin:0 auto;width:100%;" color="{{this.sentiment == 'Positive' ? 'primary' : 'warn'}}">{{ this.sentiment == 'Positive' ? 'sentiment_very_satisfied' : 'sentiment_very_dissatisfied'}}</mat-icon>
-      </div>
+      <!--TODO: Add Blank Sentiment!!-->
       <mat-form-field class="input-full-width">
         <mat-label>Comment</mat-label>
         <textarea matInput placeholder="Thought..."  name="thought" [(ngModel)] = "thought" required wrap="soft" ></textarea>
       </mat-form-field>
+      <div class = "input-full-width" style="text-align:center;" *ngIf="this.sentiment != 'None' && !checkingSentiment">
+        <mat-icon style="font-size: 30px;margin:0 auto;width:100%;" color="{{this.sentiment == 'Positive' ? 'primary' : 'warn'}}">{{ this.sentiment == 'Positive' ? 'sentiment_very_satisfied' : 'sentiment_very_dissatisfied'}}</mat-icon>
+      </div>
       <div class="input-full-width">
         <div class = "input-full-width" style="text-align:center;" *ngIf="checkingSentiment;else actionBlock">
           <mat-progress-spinner style="margin:0 auto;" color="primary"  [diameter]="30" [strokeWidth]="3" mode="indeterminate"></mat-progress-spinner>
@@ -27,6 +28,10 @@
           <button type="submit" color="primary" mat-raised-button style="width:50%;padding-left:15px;" (click)="onSubmit()" [disabled]="this.sentiment == 'None' || checkingSentiment">
               Post
           </button>
+          <div class = "input-full-width" style="text-align:center;margin-top: 20px;">
+            <mat-error *ngIf="this.enteredBlankSentiment">*Sentiment is required</mat-error>
+            <mat-error *ngIf="this.blankFields">*Title and Comment are required</mat-error>
+          </div>
         </ng-template>
       </div>
     </mat-card-content>
@@ -45,9 +50,6 @@
       <mat-card-content style="font-size:20px;">
           <p>{{pot?.post}}</p>
       </mat-card-content>
-      <button style="margin:0 auto;width:100%;" mat-icon-button (click)="onDelete(pot)" color="primary">
-        <mat-icon style="font-size: 30px;margin:0 auto;width:100%;" color="warn">remove_circle_outline</mat-icon>
-      </button>
     </mat-card>
 </ng-container>
   

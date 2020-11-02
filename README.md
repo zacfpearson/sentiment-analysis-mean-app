@@ -19,11 +19,6 @@ From this directory run: `docker build --no-cache -t sentiment-analysis:prod -f 
 ### No Docker
 See README in `sentiment-analysis-mean-app`
 
-## Start MongoDB
-
-This app depends on a MongoDB server running on the same bridge network with the resovable hostname `sentiment-analysis-db`. The easiest way to get a mongo database up and runnign is with their Docker image.
-`docker run --network=sentiment-analysis-bridge --name=sentiment-analysis-db --rm mongo:bionic`
-
 ## Start redis
 
 This app depends on a redis server running on the same bridge network with the resovable hostname `sentiment-analysis-broker`. The easiest way to get redis up and runnign is with their Docker image.
@@ -36,7 +31,6 @@ Run `docker run --network=sentiment-analysis-bridge -p 3000:3000 --rm sentiment-
 Run `docker run --network=sentiment-analysis-bridge -p 3000:3000 --rm sentiment-analysis:prod`
 
 ## Todo
-* [ ] Make mongoDB hostname a cmd arg
 * [X] Split python app into seperate service
 * [X] Convert Prod Dockerfiles to Alpine after Python separation
 * [ ] Make redis hostname a cmd arg

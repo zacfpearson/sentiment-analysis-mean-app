@@ -4,7 +4,7 @@ COPY . /sentiment-analysis
 WORKDIR /sentiment-analysis
 RUN npm install -g @angular/cli && \
     npm install && \
-    ng build --prod=true
+    ng build --prod
 
 FROM node:lts-alpine as app
 COPY --from=builder /sentiment-analysis /sentiment-analysis
