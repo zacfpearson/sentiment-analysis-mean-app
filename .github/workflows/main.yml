@@ -27,6 +27,7 @@ jobs:
           with:
             context: sentiment-analysis-mean-app
             file: docker/Dockerfile.prod
+            platforms: linux/amd64
             push: true
             tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
 
