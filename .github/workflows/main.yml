@@ -9,12 +9,6 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v2
  
-        - name: Set up QEMU
-          uses: docker/setup-qemu-action@v1
- 
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v1
- 
         - name: Login to DockerHub
           uses: azure/docker-login@v1
           with:
@@ -27,7 +21,7 @@ jobs:
           with:
             context: sentiment-analysis-mean-app
             file: docker/Dockerfile.prod
-            platforms: linux/amd64
-            push: true
+            load: true
             tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
+        - run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
 
