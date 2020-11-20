@@ -27,17 +27,19 @@ jobs:
         - name: Push Image
           run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
       
+        - name: Checkout Manifests
+          run: |
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git clone https://github.com/zacfpearson/sentiment-analysis-manifests.git
+            
         - name: Update Manifests
           run: |
-            git clone https://github.com/zacfpearson/sentiment-analysis-manifests.git
             cd sentiment-analysis-manifests
             cat mean-deployment.yaml | sed "0,/image:.*$/s//image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}/g" > mean-deployment.yaml
           
         - name: Commit Manifest Changes
-          run: |
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git commit -am "Bump docker tag"
+          run: git commit -am "Bump docker tag"
 
         - name: Push Manifest Changes
           uses: ad-m/github-push-action@master
