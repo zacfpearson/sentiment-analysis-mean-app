@@ -49,4 +49,6 @@ jobs:
           with:
            github_token: ${{ secrets.ACTION_TOKEN }}
            directory: 'sentiment-analysis-manifests'
+           repository: 'zacfpearson/sentiment-analysis-manifests'
+           branch: 'main'
 
