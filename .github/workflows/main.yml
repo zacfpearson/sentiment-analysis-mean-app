@@ -34,9 +34,6 @@ jobs:
            repository: 'zacfpearson/sentiment-analysis-manifests'
            token: ${{ secrets.ACTION_TOKEN }}
            path: sentiment-analysis-manifests
-           
-        - name: Checkout Manifests
-          run: cd sentiment-analysis-manifests
             
         - name: Update Manifests
           run: |
