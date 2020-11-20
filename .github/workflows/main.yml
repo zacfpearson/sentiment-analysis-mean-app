@@ -16,12 +16,31 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
       
-        - name: Build and push
+        - name: Build Image
           uses: docker/build-push-action@v2
           with:
             context: sentiment-analysis-mean-app
             file: docker/Dockerfile.prod
             load: true
             tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
-        - run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
+
+        - name: Push Image
+          run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
+      
+        - name: Update Manifests
+          run: |
+            git clone https://github.com/zacfpearson/sentiment-analysis-manifests.git
+            cd sentiment-analysis-manifests
+            cat mean-deployment.yaml | sed "0,/image:.*$/s//image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}/g" > mean-deployment.yaml
+          
+        - name: Commit Manifest Changes
+          run: |
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git commit -am "Bump docker tag"
+
+        - name: Push Manifest Changes
+          uses: ad-m/github-push-action@master
+          with:
+           github_token: ${{ secrets.ACTION_TOKEN }}
 
