@@ -34,6 +34,7 @@ jobs:
            repository: 'zacfpearson/sentiment-analysis-manifests'
            token: ${{ secrets.ACTION_TOKEN }}
            path: sentiment-analysis-manifests
+           fetch-depth: 0
             
         - name: Update Manifests
           run: |
