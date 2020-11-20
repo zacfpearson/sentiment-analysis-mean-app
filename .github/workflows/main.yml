@@ -8,6 +8,8 @@ jobs:
         # checkout the repo
         - name: Checkout
           uses: actions/checkout@v2
+          with:
+           path: main
  
         - name: Login to DockerHub
           uses: azure/docker-login@v1
@@ -19,19 +21,22 @@ jobs:
         - name: Build Image
           uses: docker/build-push-action@v2
           with:
-            context: sentiment-analysis-mean-app
-            file: docker/Dockerfile.prod
+            context: main/sentiment-analysis-mean-app
+            file: main/docker/Dockerfile.prod
             load: true
             tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
 
         - name: Push Image
           run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sentiment-analysis-mean:${{ github.sha }}
       
+        - uses: actions/checkout@v2
+          with:
+           repository: 'zacfpearson/sentiment-analysis-manifests'
+           token: ${{ secrets.ACTION_TOKEN }}
+           path: sentiment-analysis-manifests
+           
         - name: Checkout Manifests
-          run: |
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git clone https://github.com/zacfpearson/sentiment-analysis-manifests.git
+          run: cd sentiment-analysis-manifests
             
         - name: Update Manifests
           run: |
