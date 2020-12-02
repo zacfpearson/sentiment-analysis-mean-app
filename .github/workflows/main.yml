@@ -38,7 +38,7 @@ jobs:
             
         - name: Update Manifests
           run: |
-            cd sentiment-analysis-manifests/app
+            cd sentiment-analysis-manifests/app/deployments
             cat mean-deployment.yaml | sed -i "0,/image:.*$/s//image: ${{ secrets.REGISTRY_LOGIN_SERVER }}\/sentiment-analysis-mean:${{ github.sha }}/g" mean-deployment.yaml
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
